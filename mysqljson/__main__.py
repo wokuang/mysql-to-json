@@ -54,25 +54,25 @@ def main():
         sys.stderr.write('MySQL Error [{}]: {}\n'.format((e.args[0], e.args[1])))
         sys.exit()
 
-    sys.stdout.write('[')
-
     row = cursor_to_dict(cursor)
-
-    first_line = True
+    count = 1
+    es_doc = { "index" : { "_index": "sklogs", "_type" : "_doc", "_id" : "1" } }
 
     while row is not None:
-        if first_line == True:
-            first_line = False
-        else:
-            sys.stdout.write(',')
 
+        es_doc["_id"] = count
+        doc_str = json.dumps(es_doc, default=str)
         json_str = json.dumps(row, default=str)
 
+        sys.stdout.write(doc_str)
+        sys.stdout.write("\n")
         sys.stdout.write(json_str)
+        sys.stdout.write("\n")
 
         row = cursor_to_dict(cursor)
+        count = count + 1
 
-    sys.stdout.write(']')
+    sys.stdout.write("\n")
 
 if __name__ == "__main__":
     main()
